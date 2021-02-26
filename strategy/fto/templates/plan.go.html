@@ -1,0 +1,46 @@
+<div class="container">
+<div class="row">
+<div class="column">
+{{ range $week_index, $week := .}}
+	{{ range $session_index, $session := .Sessions }}
+	{{ $mset := index $session 0 }}
+	<h2>Liftplan Week {{ $week.DisplayNumber $week_index }} ({{$mset.Movement.Name}})
+	{{ if $week.Deload }}DELOAD{{ end }}
+	</h2>
+	<h5 class="title">Training Max: {{$mset.Movement.TrainingMax}}{{ if $mset.Movement.Calculated }} (Calculated){{ end }}, Unit: {{$mset.Movement.Unit}} </h5>
+	<table>
+		<thead>
+			<tr>
+				<th>Set<br \>(Type)</th>
+				<th>Percent<br \>(of TM)</th>
+				{{ if $week.RecommendPlates }}<th>Plates<br \>(Recommended)</th> {{end}}
+				<th>Weight<br \>(Rounded)</th>
+				<th>Reps<br \>(Prescribed)</th>
+				<th>Reps<br \>(Performed)</th>
+			</tr>
+		</thead>
+		<tbody>
+		{{ range $index, $set := $session}}
+			 <tr>
+				{{$typeIndex := $session.SetTypeIndex .Type}}
+				{{if eq $index $typeIndex}}
+					<td class="settype" rowspan="{{$session.CountSetType .Type}}"><div>{{.Type}}</div></td>
+				{{end}}
+				<td>{{printf "%.0f" .Percent}}%</td>
+				{{ if $week.RecommendPlates }}
+				<td class="plates">
+					{{ range $index, $plate := .Plates }}{{ if ne $index 0}}, {{end}}{{$plate}}{{ end }}
+				</td>
+				{{end}}
+				<td>{{ .Weight }}</td>
+				<td><div class="reps {{if .AMRAP}}amrap{{end}}">{{.Reps}}{{if .AMRAP}}+{{end}}</div></td>
+				<td></td>
+			</tr>
+		{{ end }}
+		</tbody>
+	</table>
+{{ end }}
+{{ end }}
+</div>
+</div>
+</div>

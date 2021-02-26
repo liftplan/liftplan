@@ -1,0 +1,60 @@
+    <style>
+    #lbs:checked ~ .kg {
+      display: none;
+    }
+
+    #lbs:not(:checked) ~ .lbs {
+      display: none;
+    }
+
+    .platechoice {
+      display: inline-block;
+      width: 57px;
+    }
+
+    .gearchoice {
+      padding-top: 11px;
+    }
+
+    </style>
+    <label class='gearchoice' for="unit">Units:</label>
+    {{ range $, $uo := .}}
+    <input
+      type="radio"
+      id="{{$uo.Value}}"
+      name="gear.unit"
+      value="{{$uo.Value}}"
+      {{if $uo.Checked }}checked{{ end }}
+    />
+    <label class="inline" for="{{$uo.Value}}">{{$uo.Name}}</label>
+    {{ end }}
+
+    <!-- GEAR -->
+    {{ range $, $uo := .}}
+    <!-- {{$uo.Name}} -->
+    <div class="{{$uo.Value}} gearchoice">
+      <label for="bar.{{$uo.Name}}" class="bar.{{$uo.Name}}">Barbell: </label>
+      <select name="gear.bar.{{$uo.Value}}" id="gear.bar.{{$uo.Value}}">
+        <!-- {{$uo.Name}} BARS -->
+        {{ range $, $bar := $uo.Bars }}
+        <option value="{{$bar.Value}}" class="gear.bar">{{$bar.Name}}</option>
+        {{ end }}
+      </select>
+      <section>
+      <!-- {{$uo.Name}} PLATES -->
+      <label class="gearchoice" for="plates">Plates:</label>
+      {{ range $, $plate := $uo.Plates }}
+      <div class="platechoice">
+      <input
+        type="checkbox"
+        id="plate.{{$uo.Value}}"
+        name="gear.plate.{{$uo.Value}}"
+        value="{{$plate.Value}}"
+        {{ if $plate.Checked }}checked{{end}}
+      />
+      <label class="inline" for="{{$plate.Value}}">{{$plate.Value}}</label>
+      </div>
+      {{ end }}
+      </section>
+    </div>
+    {{ end }}

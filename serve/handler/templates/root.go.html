@@ -1,0 +1,96 @@
+{{template "header"}}
+
+<style>
+
+  * {
+    box-sizing: border-box;
+  }
+  form {
+      max-width: 600px;
+  }
+
+  .rootForm {
+    display: grid;
+    grid-template-areas:
+      "gear method method"
+      "submit submit submit";
+  	grid-template-columns: auto auto;
+  	grid-template-rows: auto auto auto auto;
+    grid-gap: .8em .5em;
+    background: #fff;
+    padding: 1.2em;
+  }
+
+  .rootForm textarea {
+    height: calc(100% - 1.5em);
+    }
+
+  .rootForm button {
+    background: gray;
+    color: white;
+    padding: 1em;
+    }
+
+  .rootForm input:not([type=radio]):not([type=checkbox]), 
+  .rootForm textarea, 
+  .rootForm select {
+   	width: 100%;
+    border: solid 2px black;
+    padding: .8em;
+    margin: 1em 0;
+  }
+  fieldset {
+    border: 0;
+  }
+
+  #gear {
+    grid-area: gear;
+  }
+  #method {
+    grid-area: method;
+  }
+  #strategy {
+    grid-area: strategy;
+  }
+
+  #submit {
+    grid-area: submit;
+  }
+
+</style>
+
+
+<form action="/plan" class="rootForm" method="post">
+    <fieldset id="gear">
+    <label>Select your gear.</label>
+    {{ .Gear }}
+    </fieldset>
+    <fieldset id="method">
+    <label for="method">Choose your training method.</label>
+    {{ range $i, $m := .Methods}}
+    <input
+      type="radio"
+      id="{{$m.ShortCode}}"
+      name="method"
+      value="{{$m.ShortCode}}"
+      {{if eq $i 0 }}checked{{end}}
+    />
+    <label class="inline" for="{{$m.ShortCode}}">{{$m.Name}}</label>
+    {{ end }}
+    <input type="radio" id="null" name="method" value="null" disabled/>
+    <label class="inline" for="null">maybe someday.</label>
+
+    {{ range $, $m := .Methods}}
+    <div class="{{$m.ShortCode}}">
+      {{ $m.Render }}
+    </div>
+    {{ end }}
+    </fieldset>
+    <input id="submit" class="button-primary" type="submit" value="Plan" />
+</form>
+    {{ range $, $m := .Methods}}
+    <article class="elaborate-{{$m.ShortCode}}">
+      {{ $m.Elaborate }}
+    </article>
+    {{ end }}
+{{template "footer"}}

@@ -1,0 +1,59 @@
+<!-- FTO Options-->
+<style>
+
+.fto-movement {
+  max-width: 132px;
+  display: inline-block;
+  padding-right: 10px;
+}
+
+.fto-section {
+  padding-top: 14px
+}
+
+
+</style>
+
+<section class="fto-section">
+  <label>Options:</label>
+  {{ range $, $s := .Selectables }}
+  <div>
+  <input
+    type="checkbox"
+    id="fto.{{$s.Value}}"
+    name="fto.{{$s.Value}}"
+    value="true"
+    {{ if $s.Checked }}checked{{ end }}
+  />
+  <label class="inline" for="{{$s.Value}}">{{$s.Name}}</label>
+  </div>
+  {{ end }}
+</section>
+<section class="fto-section">
+  <label>Set your training Max (90% of your 1 rep max)</label>
+  {{ range $, $m := .Movements }}
+  <div class="fto-movement">
+    <label class="inline" for="{{$m.Value}}">{{$m.Name}}</label>
+    <input
+      type="number"
+      id="fto.{{$m.Value}}"
+      name="fto.{{$m.Value}}"
+      min="0"
+      max="2000"
+      step="0.01"
+      required
+    />
+  </div>
+  {{ end }}
+  <label>Auxilary Sets:</label>
+  {{ range $, $so := .Strategies}}
+  <input
+    type="radio"
+    id="{{$so.Value}}"
+    name="fto.strategy"
+    value="{{$so.Value}}"
+    {{if $so.Checked }}checked{{end}}
+  />
+  <label class="inline" for="{{$so.Value}}">{{$so.Name}}</label>
+  {{ end }}
+</section>
