@@ -14,3 +14,9 @@ resource "aws_lambda_function" "liftplan" {
     ignore_changes = [last_modified, qualified_arn, version]
   }
 }
+
+resource "aws_cloudwatch_log_group" "liftplan" {
+  name = "/aws/lambda/${var.project_name}"
+
+  retention_in_days = 7
+}
