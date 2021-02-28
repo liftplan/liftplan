@@ -2,6 +2,7 @@ project_name=liftplan
 project_dir=function
 builds_dir=builds
 terraform_dir=terraform
+zip_name=function.zip
 TF_BACKEND_FILE?=$(HOME)/liftplan-lambda-backend.hcl
 
 init:
@@ -17,5 +18,8 @@ build: clean
 
 zip: build
 	@cd $(project_dir)/$(builds_dir) && \
-	zip function.zip $(project_name)
+	zip $(zip_name) $(project_name)
 
+push-to-s3: zip
+	@cd $(project_dir)/$(builds_dir) && \
+	aws s3 cp $(zip_name) s3://$(LIFTPLAN_LAMBDA_S3_BUCKET)/$(project_name)/$(zip_name)
