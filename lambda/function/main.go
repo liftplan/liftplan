@@ -1,6 +1,7 @@
 package main
 
 import (
+	"log"
 	"net/http"
 	"net/url"
 	"strings"
@@ -12,70 +13,81 @@ import (
 )
 
 var (
-	badRequest = events.APIGatewayProxyResponse{Body: http.StatusText(http.StatusBadRequest), StatusCode: http.StatusBadRequest}
+	badRequest = events.APIGatewayV2HTTPResponse{Body: http.StatusText(http.StatusBadRequest), StatusCode: http.StatusBadRequest}
 	rootRoute  = h.Root()
 	planRoute  = h.Plan()
 )
 
-func eventToRequest(request events.APIGatewayProxyRequest) (*http.Request, error) {
-	v := url.Values(request.MultiValueQueryStringParameters)
+func eventToRequest(request events.APIGatewayV2HTTPRequest) (*http.Request, error) {
 	u := url.URL{
-		Path:     request.Path,
-		RawQuery: v.Encode(),
+		Path:     request.RequestContext.HTTP.Path,
+		RawQuery: request.RawQueryString,
 	}
-	r, err := http.NewRequest(request.HTTPMethod, u.String(), strings.NewReader(request.Body))
-	r.Header = request.MultiValueHeaders
+
+	method := request.RequestContext.HTTP.Method
+
+	r, err := http.NewRequest(method, u.String(), strings.NewReader(request.Body))
+	for k, v := range request.Headers {
+		r.Header.Add(k, v)
+	}
 	return r, err
 }
 
-func newProxyResponse() proxyResponse {
-	return proxyResponse{
-		PR: &events.APIGatewayProxyResponse{
+func newResponse() response {
+	return response{
+		PR: &events.APIGatewayV2HTTPResponse{
 			MultiValueHeaders: make(map[string][]string),
 		},
 	}
 }
 
-type proxyResponse struct {
-	PR *events.APIGatewayProxyResponse
+type response struct {
+	PR *events.APIGatewayV2HTTPResponse
 }
 
-func (p proxyResponse) Header() http.Header {
-	return p.PR.MultiValueHeaders
+func (r response) Header() http.Header {
+	return r.PR.MultiValueHeaders
 }
 
-func (p proxyResponse) Write(d []byte) (int, error) {
+func (r response) Write(d []byte) (int, error) {
 	var b strings.Builder
-	b.WriteString(p.PR.Body)
+	b.WriteString(r.PR.Body)
 	i, err := b.Write(d)
 	if err == nil {
-		p.PR.Body = b.String()
+		r.PR.Body = b.String()
 	}
 	return i, err
 }
 
-func (p proxyResponse) WriteHeader(statusCode int) {
-	p.PR.StatusCode = statusCode
+func (r response) WriteHeader(statusCode int) {
+	r.PR.StatusCode = statusCode
 }
 
-func newRequestResponse(request events.APIGatewayProxyRequest) (proxyResponse, *http.Request, error) {
-	w := newProxyResponse()
+func newRequestResponse(request events.APIGatewayV2HTTPRequest) (response, *http.Request, error) {
+	w := newResponse()
 	r, err := eventToRequest(request)
 	return w, r, err
 }
 
-func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+func handler(request events.APIGatewayV2HTTPRequest) (events.APIGatewayV2HTTPResponse, error) {
 	w, r, err := newRequestResponse(request)
 	if err != nil {
+		log.Println(err)
 		return badRequest, err
 	}
-	switch request.Path {
+	switch request.RequestContext.HTTP.Path {
 	case "/":
 		rootRoute(w, r)
 	case "/plan":
 		planRoute(w, r)
 	}
-	return *w.PR, nil
+	log.Println(w.PR.StatusCode)
+	return events.APIGatewayV2HTTPResponse{
+		StatusCode:        200,
+		Body:              w.PR.Body,
+		MultiValueHeaders: w.PR.MultiValueHeaders,
+	}, nil
+	// return *w.PR, nil
 }
 
 func main() {
