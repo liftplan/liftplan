@@ -1,6 +1,8 @@
 package main
 
 import (
+	"bytes"
+	"encoding/base64"
 	"log"
 	"net/http"
 	"net/url"
@@ -20,13 +22,20 @@ var (
 
 func eventToRequest(request events.APIGatewayV2HTTPRequest) (*http.Request, error) {
 	u := url.URL{
+		Scheme:   "https",
+		Host:     request.RequestContext.DomainName,
 		Path:     request.RequestContext.HTTP.Path,
 		RawQuery: request.RawQueryString,
 	}
 
 	method := request.RequestContext.HTTP.Method
 
-	r, err := http.NewRequest(method, u.String(), strings.NewReader(request.Body))
+	body, err := base64.StdEncoding.DecodeString(request.Body)
+	if err != nil {
+		return nil, err
+	}
+
+	r, err := http.NewRequest(method, u.String(), bytes.NewReader(body))
 	for k, v := range request.Headers {
 		r.Header.Add(k, v)
 	}
@@ -63,6 +72,21 @@ func (r response) WriteHeader(statusCode int) {
 	r.PR.StatusCode = statusCode
 }
 
+func (r *response) prep() {
+	r.flattenHeaders()
+	if r.PR.StatusCode == 0 {
+		r.WriteHeader(200)
+	}
+}
+
+func (r *response) flattenHeaders() {
+	headers := make(map[string]string)
+	for k, v := range r.PR.MultiValueHeaders {
+		headers[k] = v[0]
+	}
+	r.PR.Headers = headers
+}
+
 func newRequestResponse(request events.APIGatewayV2HTTPRequest) (response, *http.Request, error) {
 	w := newResponse()
 	r, err := eventToRequest(request)
@@ -81,13 +105,8 @@ func handler(request events.APIGatewayV2HTTPRequest) (events.APIGatewayV2HTTPRes
 	case "/plan":
 		planRoute(w, r)
 	}
-	log.Println(w.PR.StatusCode)
-	return events.APIGatewayV2HTTPResponse{
-		StatusCode:        200,
-		Body:              w.PR.Body,
-		MultiValueHeaders: w.PR.MultiValueHeaders,
-	}, nil
-	// return *w.PR, nil
+	w.prep()
+	return *w.PR, nil
 }
 
 func main() {

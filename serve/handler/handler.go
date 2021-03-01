@@ -53,12 +53,12 @@ func Root() http.HandlerFunc {
 		log.Fatal(err)
 	}
 	return func(w http.ResponseWriter, r *http.Request) {
-		cacheControl(maxAge, w)
-		w.Header().Add("Content-Type", "text/html")
 		if err := t.Execute(w, opts); err != nil {
 			badRequestError(w, err)
 			return
 		}
+		cacheControl(maxAge, w)
+		w.Header().Add("Content-Type", "text/html")
 	}
 }
 
@@ -69,7 +69,6 @@ func Plan() http.HandlerFunc {
 		log.Fatal(err)
 	}
 	return func(w http.ResponseWriter, r *http.Request) {
-		cacheControl(maxAge, w)
 		switch r.Method {
 		case "POST":
 			formSubmit(w, r)
@@ -81,6 +80,7 @@ func Plan() http.HandlerFunc {
 				w.Header().Add("Content-Type", "text/html")
 				renderHTML(t, w, r)
 			}
+			cacheControl(maxAge, w)
 		default:
 			badRequestError(w, fmt.Errorf("invalid request method: %v", r.Method))
 		}
