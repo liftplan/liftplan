@@ -109,7 +109,7 @@ func TestGear(t *testing.T) {
 			}
 		}
 	})
-	t.Run("Recomend", func(t *testing.T) {
+	t.Run("Recommend", func(t *testing.T) {
 		t.Parallel()
 		w := DefaultWeightsLBS
 		w = append(w, 1.25)

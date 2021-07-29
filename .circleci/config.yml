@@ -1,12 +1,21 @@
-version: 2
+version: 2.1
+
+orbs:
+  codecov: codecov/codecov@1.2.5
+
 jobs:
-  build:
+  test:
     docker:
       - image: circleci/golang:1.16
     working_directory: /go/src/github.com/{{ORG_NAME}}/{{REPO_NAME}}
     steps:
       - checkout
+      - run: make test
+      - run: make coverage
+      - codecov/upload
 
-      # specify any bash command here prefixed with `run: `
-      - run: go get -v -t -d ./...
-      - run: go test -v ./...
+workflows:
+  main:
+    jobs:
+      - test:
+          context: liftplan

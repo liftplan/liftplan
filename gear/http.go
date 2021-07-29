@@ -2,7 +2,7 @@ package gear
 
 import (
 	"bytes"
-	_ "embed"
+	_ "embed" // for use with native embedding
 	"errors"
 	"fmt"
 	"html/template"

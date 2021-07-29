@@ -491,7 +491,7 @@ func (w *Week) calculate(recommendPlates, warmup, jokersets bool, aux StrategyTy
 				case FSL:
 					err = sess.addFSL()
 				default:
-					err = errors.New("strategy type not implimented")
+					err = errors.New("strategy type not implemented")
 				}
 				if err != nil {
 					c <- worker{Error: err}
@@ -577,7 +577,7 @@ func (s Strategy) Plan(f liftplan.Format) ([]byte, error) {
 		}
 		return b.Bytes(), nil
 	default:
-		return nil, errors.New("liftplan format not implimented")
+		return nil, errors.New("liftplan format not implemented")
 	}
 }
 

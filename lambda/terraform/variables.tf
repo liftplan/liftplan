@@ -8,6 +8,11 @@ variable "project_name" {
   default = "liftplan"
 }
 
+variable "domain_name" {
+  type = string
+  default = "liftplan.xyz"
+}
+
 variable "lambda_s3_bucket" {
   type = string
 }

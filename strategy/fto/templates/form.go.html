@@ -1,31 +1,33 @@
 <!-- FTO Options-->
 <style>
+  .fto-movement {
+    max-width: 132px;
+    display: inline-block;
+    padding-right: 10px;
+  }
 
-.fto-movement {
-  max-width: 132px;
-  display: inline-block;
-  padding-right: 10px;
-}
-
-.fto-section {
-  padding-top: 14px
-}
-
-
+  .fto-section {
+    padding-top: 14px;
+  }
 </style>
 
 <section class="fto-section">
   <label>Options:</label>
   {{ range $, $s := .Selectables }}
   <div>
-  <input
-    type="checkbox"
-    id="fto.{{$s.Value}}"
-    name="fto.{{$s.Value}}"
-    value="true"
-    {{ if $s.Checked }}checked{{ end }}
-  />
-  <label class="inline" for="{{$s.Value}}">{{$s.Name}}</label>
+    <input
+      type="checkbox"
+      id="fto.{{$s.Value}}"
+      name="fto.{{$s.Value}}"
+      value="true"
+      {{
+      if
+      $s.Checked
+      }}checked{{
+      end
+      }}
+    />
+    <label class="inline" for="{{$s.Value}}">{{$s.Name}}</label>
   </div>
   {{ end }}
 </section>
@@ -52,7 +54,9 @@
     id="{{$so.Value}}"
     name="fto.strategy"
     value="{{$so.Value}}"
-    {{if $so.Checked }}checked{{end}}
+    {{if
+    $so.Checked
+    }}checked{{end}}
   />
   <label class="inline" for="{{$so.Value}}">{{$so.Name}}</label>
   {{ end }}

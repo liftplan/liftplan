@@ -1,0 +1,13 @@
+
+coverage_file=coverage.out
+
+# this is just a quality of life setting for watching all files that could
+# change and rebuilding the server. This is mostly used for deving html templates
+dev:
+	find ./strategy ./gear ./serve -print | entr -r go run serve/run/main.go
+
+test:
+	go test -race -v ./strategy/... ./gear/...
+
+coverage:
+	go test -race -coverprofile=$(coverage_file) -covermode=atomic ./strategy/... ./gear/... && go tool cover -html=$(coverage_file)
