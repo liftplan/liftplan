@@ -31,7 +31,5 @@ func TestStrategy(t *testing.T) {
 		if err != nil {
 			t.Error(err)
 		}
-		// t.Log("progression")
-		// t.Log(string(p))
 	})
 }

@@ -1,8 +1,10 @@
 require (
-	github.com/aws/aws-lambda-go v1.22.0
-	github.com/liftplan/liftplan v0.0.1
+	github.com/aws/aws-lambda-go v1.27.0
+	github.com/liftplan/liftplan v0.0.2
 )
+
+replace github.com/liftplan/liftplan => ../../
 
 module github.com/liftplan/liftplan/lambda/runtime
 
-go 1.16
+go 1.17
