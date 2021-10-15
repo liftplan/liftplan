@@ -21,21 +21,26 @@ type Gear struct {
 	Unit   Unit   `json:"unit"`
 }
 
-var (
-	// DefaultGear is a map of default Gear structs
-	DefaultGear = map[Unit]Gear{
-		LBS: {
+// Default is a helper function to make it easy to setup default
+// gear.
+func Default(unit Unit) Gear {
+	switch unit {
+	case LBS:
+		return Gear{
 			Bar:    MensBarLBS,
 			Plates: DefaultPlatesLBS,
 			Unit:   LBS,
-		},
-		KG: {
+		}
+	case KG:
+		return Gear{
 			Bar:    MensBarKG,
 			Plates: DefaultPlatesKG,
 			Unit:   KG,
-		},
+		}
+	default:
+		return Gear{}
 	}
-)
+}
 
 // String outputs the string format for Gear.
 func (g Gear) String() string {

@@ -22,7 +22,7 @@ func TestStrategy(t *testing.T) {
 		}
 		s := Strategy{
 			Movements: []Movement{m1, m2},
-			Gear:      gear.DefaultGear[gear.LBS],
+			Gear:      gear.Default(gear.LBS),
 			Type:      FSLMULTI,
 			Warmup:    true,
 			JokerSets: true,
