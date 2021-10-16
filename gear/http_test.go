@@ -49,3 +49,15 @@ func TestToValues(t *testing.T) {
 		}
 	}
 }
+
+func TestFromValues(t *testing.T) {
+	t.Parallel()
+
+	v := url.Values{}
+
+	_, err := FromValues(v)
+	if err == nil {
+		t.Error("expected error")
+	}
+
+}
