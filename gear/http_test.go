@@ -53,9 +53,43 @@ func TestToValues(t *testing.T) {
 func TestFromValues(t *testing.T) {
 	t.Parallel()
 
-	v := url.Values{}
+	invalid := url.Values{}
+	valid, _ := ToValues(Default(LBS))
 
-	_, err := FromValues(v)
+	tt := []struct {
+		values   url.Values
+		expected Gear
+		err      error
+	}{
+		{invalid, Gear{}, ErrMissingUnitQuery},
+		{valid, Default(LBS), nil},
+	}
+
+	for _, test := range tt {
+		o, err := FromValues(test.values)
+		if err != test.err {
+			t.Errorf("expected error: %v, got: %v", test.err, err)
+		}
+		if o.Unit != test.expected.Unit {
+			t.Error(o.Unit, "!=", test.expected.Unit)
+		}
+		if o.Plates.Unit != test.expected.Plates.Unit {
+			t.Error(o.Plates.Unit, "!=", test.expected.Plates.Unit)
+		}
+		for i := 0; i < len(o.Plates.Weights); i++ {
+			if o.Plates.Weights[i] != test.expected.Plates.Weights[i] {
+				t.Error(o.Plates.Weights[i], "!=", test.expected.Plates.Weights[i])
+			}
+		}
+		if o.Bar.Unit != test.expected.Bar.Unit {
+			t.Error(o.Bar.Unit, "!=", test.expected.Bar.Unit)
+		}
+		if o.Bar.Weight != test.expected.Bar.Weight {
+			t.Error(o.Bar.Weight, "!=", test.expected.Bar.Weight)
+		}
+	}
+
+	_, err := FromValues(invalid)
 	if err == nil {
 		t.Error("expected error")
 	}

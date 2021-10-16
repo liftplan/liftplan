@@ -22,6 +22,10 @@ var (
 	formTemplate string
 )
 
+var (
+	ErrMissingUnitQuery = errors.New("missing unit in query")
+)
+
 // options represent the input options for the gear form templates.
 type options struct {
 	Value   string
@@ -83,7 +87,7 @@ func FromValues(vals url.Values) (g Gear, err error) {
 func (v values) unit() (u Unit, err error) {
 	units, ok := v[namespace+".unit"]
 	if !ok {
-		return u, errors.New("missing unit in query")
+		return u, ErrMissingUnitQuery
 	}
 	return UnitFromString(strings.ToUpper(units[0]))
 }
