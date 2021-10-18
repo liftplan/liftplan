@@ -4,18 +4,6 @@ import (
 	"testing"
 )
 
-func equal(a, b []float64) bool {
-	if len(a) != len(b) {
-		return false
-	}
-	for i, v := range a {
-		if v != b[i] {
-			return false
-		}
-	}
-	return true
-}
-
 func TestTidy(t *testing.T) {
 	t.Parallel()
 	tt := []struct {
@@ -124,6 +112,34 @@ func TestPlates(t *testing.T) {
 			test.input.Tidy()
 			if o := test.input.Weights; !equal(o, test.expected) {
 				t.Error("match failed for", o, test.expected)
+			}
+		}
+	})
+	t.Run("Equals", func(t *testing.T) {
+		t.Parallel()
+
+		badUnit := DefaultPlatesKG
+		badUnit.Unit = LBS
+		badLen := DefaultPlatesKG
+		badLen.Add(200)
+		badWeights := DefaultPlatesKG
+		badWeights.Add(200)
+		badWeights.Remove(5)
+
+		tt := []struct {
+			plates   Plates
+			comp     Plates
+			expected bool
+		}{
+			{DefaultPlatesKG, DefaultPlatesKG, true},
+			{DefaultPlatesKG, DefaultPlatesLBS, false},
+			{DefaultPlatesKG, badUnit, false},
+			{DefaultPlatesKG, badLen, false},
+			{DefaultPlatesKG, badWeights, false},
+		}
+		for _, test := range tt {
+			if o := test.plates.Equals(test.comp); o != test.expected {
+				t.Errorf("expected %v for %v and %v:", test.expected, test.plates, test.comp)
 			}
 		}
 	})

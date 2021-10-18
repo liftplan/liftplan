@@ -6,6 +6,33 @@ import (
 
 func TestGear(t *testing.T) {
 	t.Parallel()
+
+	t.Run("Default", func(t *testing.T) {
+		t.Parallel()
+		tt := []struct {
+			unit     Unit
+			expected Gear
+		}{
+			{77, Gear{}},
+			{KG, Gear{
+				Bar:    MensBarKG,
+				Plates: DefaultPlatesKG,
+				Unit:   KG,
+			}},
+			{LBS, Gear{
+				Bar:    MensBarLBS,
+				Plates: DefaultPlatesLBS,
+				Unit:   LBS,
+			}},
+		}
+		for _, test := range tt {
+			output := Default(test.unit)
+			if !output.Equals(test.expected) {
+				t.Errorf("expected: %v, output: %v", test.expected, output)
+			}
+		}
+	})
+
 	t.Run("String", func(t *testing.T) {
 		t.Parallel()
 		tt := []struct {

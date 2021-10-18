@@ -77,6 +77,12 @@ func (p Plates) Min() (float64, error) {
 	return p.Weights[0], nil
 }
 
+// Equals compares all values in Weights and Unit and returns true
+// if all values are equal.
+func (p Plates) Equals(c Plates) bool {
+	return (p.Unit == c.Unit) && equal(p.Weights, c.Weights)
+}
+
 // Round takes a weight and uses its increment for rounding and doubles the increment
 // to match the smallest increment per side of the bar. It returns the closest number
 // below or even to the weight that is divisible by the doubled increment
@@ -87,6 +93,19 @@ func (p Plates) Round(weight float64) (float64, error) {
 	}
 	b := m * 2
 	return float64(int(weight/b)) * b, nil
+}
+
+// equal compares to lists of floats and returns a boolean value on equality.
+func equal(a, b []float64) bool {
+	if len(a) != len(b) {
+		return false
+	}
+	for i := 0; i < len(a); i++ {
+		if a[i] != b[i] {
+			return false
+		}
+	}
+	return true
 }
 
 // tidy takes a slice of float64, removes any duplicate values and sorts the output.

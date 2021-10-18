@@ -1,6 +1,30 @@
 package gear
 
-import "testing"
+import (
+	"testing"
+)
+
+func TestUnitFromString(t *testing.T) {
+	t.Parallel()
+	tt := []struct {
+		input    string
+		expected Unit
+		err      error
+	}{
+		{"KG", KG, nil},
+		{"LBS", LBS, nil},
+		{"FOO", 0, ErrInvalidUnit},
+	}
+	for _, test := range tt {
+		u, err := UnitFromString(test.input)
+		if err != test.err {
+			t.Errorf("unexpected error: %v, expected: %v", err, test.err)
+		}
+		if u != test.expected {
+			t.Errorf("unexpected unit: %v, expected: %v", u, test.expected)
+		}
+	}
+}
 
 func TestUnit(t *testing.T) {
 	t.Parallel()

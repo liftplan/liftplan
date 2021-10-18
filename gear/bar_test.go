@@ -43,4 +43,25 @@ func TestBar(t *testing.T) {
 			}
 		}
 	})
+	t.Run("Equals", func(t *testing.T) {
+		t.Parallel()
+
+		lbsBar20 := Bar{Weight: 20, Unit: LBS}
+		kgBar20 := Bar{Weight: 20, Unit: KG}
+
+		tt := []struct {
+			bar      Bar
+			comp     Bar
+			expected bool
+		}{
+			{MensBarLBS, MensBarLBS, true},
+			{MensBarLBS, WomensBarKG, false},
+			{lbsBar20, kgBar20, false},
+		}
+		for _, test := range tt {
+			if o := test.bar.Equals(test.comp); o != test.expected {
+				t.Errorf("expected %v for %v and %v:", test.expected, test.bar, test.comp)
+			}
+		}
+	})
 }

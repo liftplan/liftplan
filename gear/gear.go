@@ -104,3 +104,9 @@ func (g Gear) Recommend(weight float64) ([]float64, error) {
 	p, _ = ConvertFromTo(p, g.Unit, g.Plates.Unit)
 	return Recommend(p, g.Plates.Weights)
 }
+
+// Equals checks for deep equality betten a comparable gear struct and itself
+// and retuns a boolean value.
+func (g Gear) Equals(c Gear) bool {
+	return g.Bar.Equals(c.Bar) && g.Plates.Equals(c.Plates) && g.Unit == c.Unit
+}

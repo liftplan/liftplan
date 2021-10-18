@@ -41,3 +41,8 @@ func (b Bar) ConvertTo(u Unit) (float64, error) {
 func (b Bar) String() string {
 	return fmt.Sprintf("Weight: %v, Unit: %v", b.Weight, b.Unit)
 }
+
+// Equals compares a bar to itself. It returns true if both Weight and Unit are equal.
+func (b Bar) Equals(c Bar) bool {
+	return (b.Weight == c.Weight) && (b.Unit == c.Unit)
+}
