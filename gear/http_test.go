@@ -1,6 +1,7 @@
 package gear
 
 import (
+	"errors"
 	"net/url"
 	"testing"
 )
@@ -55,6 +56,15 @@ func TestFromValues(t *testing.T) {
 
 	invalid := url.Values{}
 	valid, _ := ToValues(Default(LBS))
+	badPlates, _ := ToValues(Default(LBS))
+	badPlates.Del("gear.plate.lbs")
+	badPlatesVal, _ := ToValues(Default(LBS))
+	badPlatesVal.Add("gear.plate.lbs", "foo")
+	badBar, _ := ToValues(Default(LBS))
+	badBar.Del("gear.bar.lbs")
+	badBarVal, _ := ToValues(Default(LBS))
+	badBarVal["gear.bar.lbs"] = []string{"foo"}
+	badValErr := errors.New(`strconv.ParseFloat: parsing "foo": invalid syntax`)
 
 	tt := []struct {
 		values   url.Values
@@ -63,35 +73,22 @@ func TestFromValues(t *testing.T) {
 	}{
 		{invalid, Gear{}, ErrMissingUnitQuery},
 		{valid, Default(LBS), nil},
+		{badPlates, Gear{}, ErrMissingPlatesQuery},
+		{badPlatesVal, Gear{}, badValErr},
+		{badBar, Gear{}, ErrMissingBarQuery},
+		{badBarVal, Gear{}, badValErr},
 	}
 
 	for _, test := range tt {
 		o, err := FromValues(test.values)
-		if err != test.err {
-			t.Errorf("expected error: %v, got: %v", test.err, err)
-		}
-		if o.Unit != test.expected.Unit {
-			t.Error(o.Unit, "!=", test.expected.Unit)
-		}
-		if o.Plates.Unit != test.expected.Plates.Unit {
-			t.Error(o.Plates.Unit, "!=", test.expected.Plates.Unit)
-		}
-		for i := 0; i < len(o.Plates.Weights); i++ {
-			if o.Plates.Weights[i] != test.expected.Plates.Weights[i] {
-				t.Error(o.Plates.Weights[i], "!=", test.expected.Plates.Weights[i])
+		if err != nil {
+			if err.Error() != test.err.Error() {
+				t.Errorf("expected error: %v, got: %v", test.err, err)
 			}
 		}
-		if o.Bar.Unit != test.expected.Bar.Unit {
-			t.Error(o.Bar.Unit, "!=", test.expected.Bar.Unit)
-		}
-		if o.Bar.Weight != test.expected.Bar.Weight {
-			t.Error(o.Bar.Weight, "!=", test.expected.Bar.Weight)
+
+		if !o.Equals(test.expected) {
+			t.Errorf("expected: %v, got: %v", test.expected, o)
 		}
 	}
-
-	_, err := FromValues(invalid)
-	if err == nil {
-		t.Error("expected error")
-	}
-
 }

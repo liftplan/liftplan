@@ -23,7 +23,9 @@ var (
 )
 
 var (
-	ErrMissingUnitQuery = errors.New("missing unit in query")
+	ErrMissingUnitQuery   = errors.New("missing unit in query")
+	ErrMissingPlatesQuery = errors.New("missing plates in query")
+	ErrMissingBarQuery    = errors.New("missing bar in query")
 )
 
 // options represent the input options for the gear form templates.
@@ -95,7 +97,7 @@ func (v values) unit() (u Unit, err error) {
 func (v values) plates(unit Unit) (p Plates, err error) {
 	plates, ok := v[namespace+".plate."+strings.ToLower(unit.String())]
 	if !ok {
-		return p, errors.New("missing plates in query")
+		return p, ErrMissingPlatesQuery
 	}
 	l := len(plates)
 	pi := make([]float64, l)
@@ -115,7 +117,7 @@ func (v values) bar(unit Unit) (b Bar, err error) {
 
 	w, ok := v[namespace+".bar."+strings.ToLower(unit.String())]
 	if !ok {
-		return b, errors.New("missing bar in query")
+		return b, ErrMissingBarQuery
 	}
 	weight, err := strconv.ParseFloat(w[0], 64)
 	if err != nil {

@@ -1,6 +1,8 @@
 package gear
 
 import (
+	"bytes"
+	"errors"
 	"testing"
 )
 
@@ -28,6 +30,48 @@ func TestUnitFromString(t *testing.T) {
 
 func TestUnit(t *testing.T) {
 	t.Parallel()
+	t.Run("MarshalJSON", func(t *testing.T) {
+		t.Parallel()
+		tt := []struct {
+			input    Unit
+			expected []byte
+		}{
+			{KG, []byte(`"KG"`)},
+			{LBS, []byte(`"LBS"`)},
+			{Unit(2), []byte(`""`)},
+			{Unit(3), []byte(`""`)},
+		}
+		for _, test := range tt {
+			o, _ := test.input.MarshalJSON()
+			if !bytes.Equal(o, test.expected) {
+				t.Error("test failed for:", test)
+			}
+		}
+	})
+	t.Run("UnmarshalJSON", func(t *testing.T) {
+		t.Parallel()
+		tt := []struct {
+			input    []byte
+			expected Unit
+			err      error
+		}{
+			{[]byte(`"KG"`), KG, nil},
+			{[]byte(`"LBS"`), LBS, nil},
+			{[]byte(`"BLAH"`), KG, ErrInvalidUnit},
+			{[]byte(`""`), KG, ErrInvalidUnit},
+			{[]byte(``), KG, errors.New("unexpected end of JSON input")},
+		}
+		for _, test := range tt {
+			var u Unit
+			if err := u.UnmarshalJSON(test.input); err != test.err {
+				if err.Error() != test.err.Error() {
+					t.Error("got:", err, "expected:", test.err)
+				}
+			} else if u != test.expected {
+				t.Error("test failed for:", test)
+			}
+		}
+	})
 	t.Run("String", func(t *testing.T) {
 		t.Parallel()
 		tt := []struct {

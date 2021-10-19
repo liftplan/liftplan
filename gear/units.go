@@ -53,7 +53,7 @@ func UnitFromString(s string) (Unit, error) {
 
 // MarshalJSON is used for human readable json.
 func (u Unit) MarshalJSON() ([]byte, error) {
-	return []byte(fmt.Sprintf(`"%v"`, u.String())), nil
+	return []byte(fmt.Sprintf(`"%s"`, u)), nil
 }
 
 // UnmarshalJSON is used to convert human readable json to a Unit type
