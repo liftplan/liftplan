@@ -106,7 +106,7 @@ func (g Gear) Recommend(weight float64) ([]float64, error) {
 }
 
 // Equals checks for deep equality betten a comparable gear struct and itself
-// and retuns a boolean value.
+// and returns a boolean value.
 func (g Gear) Equals(c Gear) bool {
 	return g.Bar.Equals(c.Bar) && g.Plates.Equals(c.Plates) && g.Unit == c.Unit
 }

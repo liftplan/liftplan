@@ -23,9 +23,12 @@ var (
 )
 
 var (
-	ErrMissingUnitQuery   = errors.New("missing unit in query")
+	// ErrMissingUnitQuery is an error when gear is missing a unit in the query.
+	ErrMissingUnitQuery = errors.New("missing unit in query")
+	// ErrMissingPlatesQuery is an error when gear is missing plastes in the query.
 	ErrMissingPlatesQuery = errors.New("missing plates in query")
-	ErrMissingBarQuery    = errors.New("missing bar in query")
+	// ErrMissingBarQuery is an error when gear is missing a bar in the query.
+	ErrMissingBarQuery = errors.New("missing bar in query")
 )
 
 // options represent the input options for the gear form templates.
