@@ -1,8 +1,11 @@
 package gear
 
 import (
+	"encoding/xml"
 	"errors"
+	"io"
 	"net/url"
+	"strings"
 	"testing"
 )
 
@@ -91,4 +94,24 @@ func TestFromValues(t *testing.T) {
 			t.Errorf("expected: %v, got: %v", test.expected, o)
 		}
 	}
+}
+
+func TestFormFields(t *testing.T) {
+	t.Parallel()
+	r := strings.NewReader(string(FormFields()))
+	d := xml.NewDecoder(r)
+
+	d.Strict = false
+	d.AutoClose = xml.HTMLAutoClose
+	d.Entity = xml.HTMLEntity
+	for {
+		_, err := d.Token()
+		if err == io.EOF {
+			return
+		}
+		if err != nil {
+			t.Error(err)
+		}
+	}
+
 }

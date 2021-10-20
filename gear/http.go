@@ -129,7 +129,7 @@ func (v values) bar(unit Unit) (b Bar, err error) {
 }
 
 // FormFields returns an html snippet for choosing lifting gear for the submit form
-func FormFields() (r template.HTML, err error) {
+func FormFields() template.HTML {
 	lbs := options{
 		Value: "lbs",
 		Name:  "LBS",
@@ -171,13 +171,8 @@ func FormFields() (r template.HTML, err error) {
 		},
 	}
 
-	t, err := template.New(namespace).Parse(formTemplate)
-	if err != nil {
-		return r, err
-	}
+	t, _ := template.New(namespace).Parse(formTemplate)
 	var b bytes.Buffer
-	if err := t.Execute(&b, []options{lbs, kg}); err != nil {
-		return r, err
-	}
-	return template.HTML(b.String()), err
+	t.Execute(&b, []options{lbs, kg})
+	return template.HTML(b.String())
 }

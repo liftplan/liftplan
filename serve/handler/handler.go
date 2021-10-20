@@ -48,10 +48,7 @@ func Root() http.HandlerFunc {
 	if err != nil {
 		log.Fatal(err)
 	}
-	opts, err := getOptions()
-	if err != nil {
-		log.Fatal(err)
-	}
+	opts := getOptions()
 	return func(w http.ResponseWriter, r *http.Request) {
 		if err := t.Execute(w, opts); err != nil {
 			badRequestError(w, err)
@@ -147,17 +144,13 @@ func pageTemplate(core string, name string) (*template.Template, error) {
 	return t, nil
 }
 
-func getOptions() (serve.Options, error) {
-	gf, err := gear.FormFields()
-	if err != nil {
-		return serve.Options{}, err
-	}
-
-	f, err := fto.FormFields()
+func getOptions() serve.Options {
+	gf := gear.FormFields()
+	f := fto.FormFields()
 	return serve.Options{
 		Methods: []liftplan.FormFields{f},
 		Gear:    gf,
-	}, err
+	}
 }
 
 func plannerFromValues(vals url.Values) (liftplan.Liftplanner, error) {

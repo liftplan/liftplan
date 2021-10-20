@@ -31,7 +31,7 @@ type choice struct {
 }
 
 // FormFields returns a liftplan.FormFields
-func FormFields() (liftplan.FormFields, error) {
+func FormFields() liftplan.FormFields {
 
 	s := []choice{
 		{Name: "Warmup", Value: "warmup", Checked: true},
@@ -60,12 +60,8 @@ func FormFields() (liftplan.FormFields, error) {
 	}
 
 	o := options{Selectables: s, Movements: mo, Strategies: strats}
-	t, err := template.New("fto").Parse(formTemplate)
-	if err != nil {
-		return nil, err
-	}
-
-	return input{Template: t, Options: o}, err
+	t, _ := template.New("fto").Parse(formTemplate)
+	return input{Template: t, Options: o}
 }
 
 // Render returns the template.HTML for an input template
