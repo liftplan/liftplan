@@ -33,3 +33,30 @@ func TestStrategy(t *testing.T) {
 		}
 	})
 }
+
+func TestSetType(t *testing.T) {
+	t.Parallel()
+	t.Run("UnmarshalJSON", func(t *testing.T) {
+		t.Parallel()
+		tt := []struct {
+			input    []byte
+			expected SetType
+			err      error
+		}{
+			{[]byte(`"Working"`), Working, nil},
+			{[]byte(`"foo"`), Working, ErrInvalidSetType},
+		}
+		for _, test := range tt {
+			var s SetType
+			if err := s.UnmarshalJSON(test.input); err != nil {
+				if err.Error() != test.err.Error() {
+					t.Error(err, test.err)
+				}
+			} else {
+				if s != test.expected {
+					t.Error(s, test.expected)
+				}
+			}
+		}
+	})
+}
