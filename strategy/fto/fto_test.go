@@ -1,6 +1,7 @@
 package fto
 
 import (
+	"errors"
 	"testing"
 
 	"github.com/liftplan/liftplan"
@@ -45,6 +46,7 @@ func TestSetType(t *testing.T) {
 		}{
 			{[]byte(`"Working"`), Working, nil},
 			{[]byte(`"foo"`), Working, ErrInvalidSetType},
+			{[]byte(`false`), Working, errors.New("json: cannot unmarshal bool into Go value of type string")},
 		}
 		for _, test := range tt {
 			var s SetType
@@ -58,5 +60,22 @@ func TestSetType(t *testing.T) {
 				}
 			}
 		}
+	})
+	t.Run("String", func(t *testing.T) {
+		t.Parallel()
+		tt := []struct {
+			input    SetType
+			expected string
+		}{
+			{Working, "Working"},
+			{SetType(20), ""},
+		}
+
+		for _, test := range tt {
+			if test.input.String() != test.expected {
+				t.Error(test)
+			}
+		}
+
 	})
 }
