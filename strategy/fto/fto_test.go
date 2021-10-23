@@ -79,3 +79,31 @@ func TestSetType(t *testing.T) {
 
 	})
 }
+
+func TestDeloadType(t *testing.T) {
+	t.Parallel()
+	t.Run("UnmarshalJSON", func(t *testing.T) {
+		t.Parallel()
+		tt := []struct {
+			input    []byte
+			expected DeloadType
+			err      error
+		}{
+			{[]byte(`"deload1"`), Deload1, nil},
+			{[]byte(`"foo"`), Deload1, ErrInvalidDeloadType},
+			{[]byte(`false`), Deload1, errors.New("json: cannot unmarshal bool into Go value of type string")},
+		}
+		for _, test := range tt {
+			var d DeloadType
+			if err := d.UnmarshalJSON(test.input); err != nil {
+				if err.Error() != test.err.Error() {
+					t.Error(err, test.err)
+				}
+			} else {
+				if d != test.expected {
+					t.Error(d, test.expected)
+				}
+			}
+		}
+	})
+}
