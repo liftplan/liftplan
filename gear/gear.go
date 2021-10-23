@@ -89,7 +89,6 @@ func (g Gear) barFromWeight(weight float64) (b, p float64, err error) {
 	}
 	bar, _ := g.Min()
 	if weight-bar < -.0001 {
-		fmt.Println(weight, bar)
 		return 0, 0, ErrInputLessThanBar
 	}
 	return bar, weight - bar, nil

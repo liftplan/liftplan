@@ -104,7 +104,7 @@ type DeloadType uint
 
 const (
 	// Deload1 (5x40%, 5x50%, 5x60%)
-	Deload1 = iota
+	Deload1 DeloadType = iota
 	// Deload2 (5x50%, 5x60%, 5x70%)
 	Deload2
 	// Deload3 (3x65%, 5x75%, 5x85%)
@@ -125,7 +125,7 @@ var stringToDeloadType = map[string]DeloadType{
 
 // String is the string representation of a deload type
 func (d DeloadType) String() string {
-	return fmt.Sprintf("deload%v", d+1)
+	return fmt.Sprintf("deload%v", uint8(d)+1)
 }
 
 // MarshalJSON is the json marshaller for DeloadType

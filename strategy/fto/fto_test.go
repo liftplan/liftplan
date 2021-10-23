@@ -1,6 +1,7 @@
 package fto
 
 import (
+	"bytes"
 	"errors"
 	"testing"
 
@@ -103,6 +104,38 @@ func TestDeloadType(t *testing.T) {
 				if d != test.expected {
 					t.Error(d, test.expected)
 				}
+			}
+		}
+	})
+	t.Run("String", func(t *testing.T) {
+		t.Parallel()
+		tt := []struct {
+			input    DeloadType
+			expected string
+		}{
+			{Deload1, "deload1"},
+			{DeloadType(20), "deload21"},
+		}
+
+		for _, test := range tt {
+			if test.input.String() != test.expected {
+				t.Error(test.input.String(), test.expected)
+			}
+		}
+	})
+	t.Run("MarshalJSON", func(t *testing.T) {
+		t.Parallel()
+		tt := []struct {
+			input    DeloadType
+			expected []byte
+		}{
+			{Deload1, []byte(`"deload1"`)},
+		}
+
+		for _, test := range tt {
+			b, _ := test.input.MarshalJSON()
+			if !bytes.Equal(b, test.expected) {
+				t.Error(test.input, test.expected)
 			}
 		}
 	})
