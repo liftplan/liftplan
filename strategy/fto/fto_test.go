@@ -140,3 +140,20 @@ func TestDeloadType(t *testing.T) {
 		}
 	})
 }
+
+func TestStrategyTypeFromString(t *testing.T) {
+	t.Parallel()
+	g, err := StrategyTypeFromString("FSL Multiple Sets")
+	if err != nil {
+		t.Error(err)
+	}
+	if g != StrategyType(0) {
+		t.Error("mismatch", g, StrategyType(0))
+	}
+	{
+		_, err := StrategyTypeFromString("blah")
+		if err != ErrInvalidStrategyType {
+			t.Error("error failed to return for 'blah'")
+		}
+	}
+}
