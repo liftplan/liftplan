@@ -141,6 +141,57 @@ func TestDeloadType(t *testing.T) {
 	})
 }
 
+func TestStrategyType(t *testing.T) {
+	t.Parallel()
+	t.Run("String", func(t *testing.T) {
+		t.Parallel()
+		g := FSLMULTI
+		b := StrategyType(55)
+		if g.String() != "FSL Multiple Sets" {
+			t.Error(g.String(), "!= FSL Multiple Sets")
+		}
+		if b.String() != "" {
+			t.Error(b.String(), "!= ''")
+		}
+	})
+	t.Run("MarshalJSON", func(t *testing.T) {
+		t.Parallel()
+		g := FSLMULTI
+		b, _ := g.MarshalJSON()
+		if !bytes.Equal(b, []byte(`"FSL Multiple Sets"`)) {
+			t.Error(g, "!=", []byte(`"FSL Multiple Sets"`))
+		}
+	})
+	t.Run("UnmarshalJSON", func(t *testing.T) {
+		t.Parallel()
+
+		goodBytes := []byte(`"FSL Multiple Sets"`)
+		badBytes := []byte(`false`)
+
+		tt := []struct {
+			input    []byte
+			expected StrategyType
+			err      error
+		}{
+			{goodBytes, FSLMULTI, nil},
+			{badBytes, StrategyType(0), errors.New("json: cannot unmarshal bool into Go value of type string")},
+		}
+
+		for _, test := range tt {
+			var s StrategyType
+			if err := s.UnmarshalJSON(test.input); err != nil {
+				if err.Error() != test.err.Error() {
+					t.Error(err, test.err)
+				}
+			} else {
+				if s != test.expected {
+					t.Error(s, test.expected)
+				}
+			}
+		}
+	})
+}
+
 func TestStrategyTypeFromString(t *testing.T) {
 	t.Parallel()
 	g, err := StrategyTypeFromString("FSL Multiple Sets")
@@ -148,7 +199,7 @@ func TestStrategyTypeFromString(t *testing.T) {
 		t.Error(err)
 	}
 	if g != StrategyType(0) {
-		t.Error("mismatch", g, StrategyType(0))
+		t.Error("mismatch", g, StrategyType(0), errors.New("json: cannot unmarshal bool into Go value of type string"))
 	}
 	{
 		_, err := StrategyTypeFromString("blah")
