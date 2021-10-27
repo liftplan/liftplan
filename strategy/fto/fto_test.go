@@ -19,18 +19,29 @@ func TestStrategy(t *testing.T) {
 		}
 		m2 := Movement{
 			Name:        "squat",
-			TrainingMax: 185,
+			TrainingMax: 4000,
 			Unit:        gear.LBS,
 		}
-		s := Strategy{
+		s1 := Strategy{
 			Movements: []Movement{m1, m2},
 			Gear:      gear.Default(gear.LBS),
 			Type:      FSLMULTI,
 			Warmup:    true,
 			JokerSets: true,
 		}
-		_, err := s.Plan(liftplan.JSON)
-		if err != nil {
+		s2 := Strategy{
+			Movements:       []Movement{m1, m2},
+			Gear:            gear.Default(gear.LBS),
+			Type:            FSL,
+			Warmup:          true,
+			JokerSets:       true,
+			RecommendPlates: true,
+		}
+
+		if _, err := s1.Plan(liftplan.JSON); err != nil {
+			t.Error(err)
+		}
+		if _, err := s2.Plan(liftplan.HTML); err != nil {
 			t.Error(err)
 		}
 	})
@@ -207,4 +218,26 @@ func TestStrategyTypeFromString(t *testing.T) {
 			t.Error("error failed to return for 'blah'")
 		}
 	}
+}
+
+func TestSet(t *testing.T) {
+	t.Parallel()
+	t.Run("calculate", func(t *testing.T) {
+		t.Parallel()
+		tt := []struct {
+			set  Set
+			rec  bool
+			gear gear.Gear
+			err  error
+		}{
+			{Set{}, false, gear.Default(gear.LBS), nil},
+		}
+		for _, test := range tt {
+			if err := test.set.calculate(test.rec, test.gear); err != nil {
+				if err != test.err {
+					t.Error(err, test.err)
+				}
+			}
+		}
+	})
 }
