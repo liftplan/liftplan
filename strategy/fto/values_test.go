@@ -1,6 +1,7 @@
 package fto
 
 import (
+	"errors"
 	"net/url"
 	"testing"
 
@@ -65,22 +66,26 @@ func TestFromValues(t *testing.T) {
 	}
 
 	goodVals, _ := s1.Values()
-	t.Log(goodVals)
-	t.Log()
+	missingStrat, _ := s1.Values()
+	missingStrat.Del("fto.strategy")
+	badStrat, _ := s1.Values()
+	badStrat["fto.strategy"] = []string{"blah"}
 
 	tt := []struct {
 		input    url.Values
 		expected Strategy
 		err      error
 	}{
-		{url.Values{}, Strategy{}, gear.ErrMissingUnitQuery},
+		{url.Values{}, s1, gear.ErrMissingUnitQuery},
 		{goodVals, s1, nil},
+		{missingStrat, s1, errors.New("missing strategy in query")},
+		{badStrat, s1, ErrInvalidStrategyType},
 	}
 
 	for _, test := range tt {
 		_, err := FromValues(test.input)
 		if err != nil {
-			if err != test.err {
+			if err.Error() != test.err.Error() {
 				t.Error(test.err, err)
 			}
 		}
