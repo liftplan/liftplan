@@ -225,20 +225,17 @@ type Set struct {
 }
 
 func (s *Set) calculate(recommendPlates bool, g gear.Gear) error {
-
 	floor, err := s.Movement.floor(g)
 	if err != nil {
 		return err
 	}
-
 	if s.Percent < floor {
 		s.Percent = floor
 	}
 
-	max, err := gear.ConvertFromTo(s.Movement.TrainingMax, s.Movement.Unit, g.Unit)
-	if err != nil {
-		return err
-	}
+	// this error isn't possible because we check both
+	// units in .floor()
+	max, _ := gear.ConvertFromTo(s.Movement.TrainingMax, s.Movement.Unit, g.Unit)
 
 	c := max * s.Percent / 100
 	rounded, err := g.Round(c)

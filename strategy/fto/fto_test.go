@@ -224,17 +224,46 @@ func TestSet(t *testing.T) {
 	t.Parallel()
 	t.Run("calculate", func(t *testing.T) {
 		t.Parallel()
+
+		m1 := Movement{
+			Name:        "over-head press",
+			TrainingMax: 175,
+			Unit:        gear.LBS,
+		}
+
+		mBadUnit := Movement{
+			Name:        "over-head press",
+			TrainingMax: 175,
+			Unit:        gear.Unit(5),
+		}
+
+		s1 := Set{
+			Movement: m1,
+		}
+
+		s2 := Set{
+			Movement: mBadUnit,
+		}
+
+		goodGear := gear.Default(gear.LBS)
+
+		badBarGear := gear.Default(gear.LBS)
+		badBarGear.Bar.Unit = gear.Unit(5)
+		t.Log(uint(badBarGear.Bar.Unit))
+
 		tt := []struct {
 			set  Set
 			rec  bool
 			gear gear.Gear
 			err  error
 		}{
-			{Set{}, false, gear.Default(gear.LBS), nil},
+			{Set{}, false, goodGear, nil},
+			{s1, false, badBarGear, gear.ErrInvalidUnit},
+			{s2, false, goodGear, gear.ErrInvalidUnit},
 		}
 		for _, test := range tt {
 			if err := test.set.calculate(test.rec, test.gear); err != nil {
-				if err != test.err {
+				if err.Error() != test.err.Error() {
 					t.Error(err, test.err)
 				}
 			}
