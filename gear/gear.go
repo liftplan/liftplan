@@ -9,6 +9,7 @@ var (
 	// ErrInputLessThanBar is an error message used to warn that a Rounding call requests
 	// a value that is less than the weight of the empty bar, itself.
 	ErrInputLessThanBar = errors.New("input weight is less than the minimum weight of the bar")
+	ErrInvalidUnitGear  = errors.New("invalid unit: gear")
 )
 
 // Gear is a struct that represents the weight inputs for the Bar, Plates, and desired unites
@@ -53,10 +54,16 @@ func (g Gear) Min() (float64, error) {
 	return g.Bar.ConvertTo(g.Unit)
 }
 
-// Valid checks that all units used in Gear.Unit, gear.Plates.Unit, and
-// gear.Bar.Unit, are valid all must be valid for a true response
-func (g Gear) Valid() bool {
-	return g.Unit.Valid() && g.Plates.Unit.Valid() && g.Bar.Unit.Valid()
+// Valid checks gear, plates, and bar for valid units and
+// valid valudes for Plates and Bar
+func (g Gear) Valid() error {
+	if !g.Unit.Valid() {
+		return ErrInvalidUnitGear
+	}
+	if err := g.Bar.Valid(); err != nil {
+		return err
+	}
+	return g.Plates.Valid()
 }
 
 // Round takes a float64 number and returns the rounded total
@@ -65,6 +72,9 @@ func (g Gear) Valid() bool {
 // but the Gear units are LBS, the float64 will be returned in gear units
 // of LBS.
 func (g Gear) Round(weight float64) (float64, error) {
+	if err := g.Valid(); err != nil {
+		return 0, err
+	}
 	bar, plates, err := g.barFromWeight(weight)
 	if err != nil {
 		return 0, err
@@ -73,10 +83,7 @@ func (g Gear) Round(weight float64) (float64, error) {
 		return weight, nil
 	}
 	p, _ := ConvertFromTo(plates, g.Unit, g.Plates.Unit)
-	pr, err := g.Plates.Round(p)
-	if err != nil {
-		return 0, err
-	}
+	pr, _ := g.Plates.Round(p)
 	r, _ := ConvertFromTo(pr, g.Plates.Unit, g.Unit)
 	return bar + r, nil
 }
@@ -84,18 +91,18 @@ func (g Gear) Round(weight float64) (float64, error) {
 // barFromWeight takes a weight and returns the bar and plate weight
 // in the units of Gear or returns an error.
 func (g Gear) barFromWeight(weight float64) (b, p float64, err error) {
-	if !g.Valid() {
-		return 0, 0, ErrInvalidUnit
-	}
 	bar, _ := g.Min()
 	if weight-bar < -.0001 {
-		return 0, 0, ErrInputLessThanBar
+		return b, p, ErrInputLessThanBar
 	}
 	return bar, weight - bar, nil
 }
 
 // Recommend takes
 func (g Gear) Recommend(weight float64) ([]float64, error) {
+	if err := g.Valid(); err != nil {
+		return nil, err
+	}
 	_, p, err := g.barFromWeight(weight)
 	if err != nil {
 		return nil, err

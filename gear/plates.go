@@ -14,7 +14,9 @@ type Plates struct {
 
 var (
 	// ErrNoPlatesFound is the basic error for not finding plates.
-	ErrNoPlatesFound = errors.New("no plates found")
+	ErrNoPlatesFound        = errors.New("no plates found")
+	ErrInvalidUnitPlates    = errors.New("invalid unit: plates")
+	ErrInvalidWeightsPlates = errors.New("invalid weight: plates")
 )
 
 // DefaultWeightsKB is the default set of weights in KB
@@ -70,10 +72,10 @@ func (p *Plates) Remove(plate float64) {
 
 // Min gets the smallest increment of plate in the Weights slice.
 func (p Plates) Min() (float64, error) {
-	if len(p.Weights) == 0 {
-		return 0, ErrNoPlatesFound
-	}
 	p.Tidy()
+	if err := p.Valid(); err != nil {
+		return 0, err
+	}
 	return p.Weights[0], nil
 }
 
@@ -93,6 +95,23 @@ func (p Plates) Round(weight float64) (float64, error) {
 	}
 	b := m * 2
 	return float64(int(weight/b)) * b, nil
+}
+
+// Valid checks that Unit is Valid and checks that length > 0
+// and that all plates greater than zero
+func (p Plates) Valid() error {
+	if !p.Unit.Valid() {
+		return ErrInvalidUnitPlates
+	}
+	if len(p.Weights) == 0 {
+		return ErrNoPlatesFound
+	}
+	for _, w := range p.Weights {
+		if w <= 0 {
+			return ErrInvalidWeightsPlates
+		}
+	}
+	return nil
 }
 
 // equal compares to lists of floats and returns a boolean value on equality.

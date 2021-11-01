@@ -110,29 +110,39 @@ func TestGear(t *testing.T) {
 				Unit:   Unit(5),
 				Bar:    Bar{Weight: 45, Unit: Unit(5)},
 				Plates: Plates{},
-			}, 0, 0, ErrInvalidUnit},
+			}, 0, 0, ErrInvalidUnitGear},
 			{Gear{
 				Unit:   LBS,
 				Bar:    Bar{Weight: 45, Unit: Unit(5)},
 				Plates: Plates{},
-			}, 0, 0, ErrInvalidUnit},
+			}, 0, 0, ErrInvalidUnitBar},
+			{Gear{
+				Unit:   LBS,
+				Bar:    Bar{Weight: -5, Unit: LBS},
+				Plates: Plates{},
+			}, 0, 0, ErrInvalidWeightBar},
 			{Gear{
 				Unit:   LBS,
 				Bar:    MensBarLBS,
 				Plates: Plates{Weights: []float64{}, Unit: Unit(5)},
-			}, 89, 0, ErrInvalidUnit},
+			}, 89, 0, ErrInvalidUnitPlates},
 			{Gear{
 				Unit:   KG,
 				Bar:    MensBarKG,
-				Plates: Plates{Weights: []float64{}, Unit: Unit(5)},
-			}, 89, 0, ErrInvalidUnit},
+				Plates: Plates{Weights: []float64{2}, Unit: Unit(5)},
+			}, 89, 0, ErrInvalidUnitPlates},
+			{Gear{
+				Unit:   KG,
+				Bar:    MensBarKG,
+				Plates: Plates{Weights: []float64{-1}, Unit: KG},
+			}, 89, 0, ErrInvalidWeightsPlates},
 		}
-		for _, test := range tt {
+		for i, test := range tt {
 			o, err := test.gear.Round(test.input)
 			if err != test.err {
-				t.Error("unexpected error:", err, test.err)
+				t.Error("unexpected error:", err, test.err, i)
 			} else if o != test.expected {
-				t.Error("unexpected result:", o, test.expected)
+				t.Error("unexpected result:", o, test.expected, i)
 			}
 		}
 	})
@@ -153,6 +163,11 @@ func TestGear(t *testing.T) {
 		}{
 			{g, 157.5, []float64{1.25, 10, 45}, nil},
 			{g, 44, []float64{}, ErrInputLessThanBar},
+			{Gear{
+				Unit:   LBS,
+				Bar:    MensBarLBS,
+				Plates: Plates{Weights: []float64{}, Unit: Unit(5)},
+			}, 44, []float64{}, ErrInvalidUnitPlates},
 		}
 		for _, test := range tt {
 			o, err := test.gear.Recommend(test.weight)

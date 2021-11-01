@@ -1,6 +1,14 @@
 package gear
 
-import "fmt"
+import (
+	"errors"
+	"fmt"
+)
+
+var (
+	ErrInvalidWeightBar = errors.New("invalid weight: bar")
+	ErrInvalidUnitBar   = errors.New("invalid unit: bar")
+)
 
 var (
 	// MensBarKG represents a standard men's 20 KG barbell
@@ -45,4 +53,16 @@ func (b Bar) String() string {
 // Equals compares a bar to itself. It returns true if both Weight and Unit are equal.
 func (b Bar) Equals(c Bar) bool {
 	return (b.Weight == c.Weight) && (b.Unit == c.Unit)
+}
+
+// Valid checks that Unit is valid and that Bar Weight != zero
+// it returns an error
+func (b Bar) Valid() error {
+	if !b.Unit.Valid() {
+		return ErrInvalidUnitBar
+	}
+	if b.Weight <= 0 {
+		return ErrInvalidWeightBar
+	}
+	return nil
 }
