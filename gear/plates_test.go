@@ -1,6 +1,7 @@
 package gear
 
 import (
+	"errors"
 	"testing"
 )
 
@@ -112,6 +113,50 @@ func TestPlates(t *testing.T) {
 			test.input.Tidy()
 			if o := test.input.Weights; !equal(o, test.expected) {
 				t.Error("match failed for", o, test.expected)
+			}
+		}
+	})
+	t.Run("Min", func(t *testing.T) {
+		t.Parallel()
+		tt := []struct {
+			input    Plates
+			expected float64
+			err      error
+		}{
+			{Plates{Weights: []float64{5, 10, 15, 20, 25}, Unit: KG}, 5, nil},
+			{Plates{Weights: []float64{55, 10, 15, 20, 25}, Unit: KG}, 10, nil},
+			{Plates{Weights: []float64{-1, 10, 15, 20, 25}, Unit: Unit(5)}, 10, ErrInvalidUnitPlates},
+		}
+		for i, test := range tt {
+			o, err := test.input.Min()
+			if err != nil {
+				if !errors.Is(err, test.err) {
+					t.Error("error mismatch for test", i, test.err, ErrInvalidUnitPlates)
+				}
+			} else if o != test.expected {
+				t.Error("unexpected result: ", i, o, test.expected)
+			}
+		}
+	})
+	t.Run("Round", func(t *testing.T) {
+		t.Parallel()
+		tt := []struct {
+			plates   Plates
+			input    float64
+			expected float64
+			err      error
+		}{
+			{Plates{Weights: []float64{5, 10, 15, 20, 25}, Unit: KG}, 333, 330, nil},
+			{Plates{Weights: []float64{-1, 10, 15, 20, 25}, Unit: Unit(5)}, 0, 0, ErrInvalidUnitPlates},
+		}
+		for i, test := range tt {
+			o, err := test.plates.Round(test.input)
+			if err != nil {
+				if !errors.Is(err, test.err) {
+					t.Error("error mismatch for test", i, test.err, ErrInvalidUnitPlates)
+				}
+			} else if o != test.expected {
+				t.Error("unexpected result: ", i, o, test.expected)
 			}
 		}
 	})
