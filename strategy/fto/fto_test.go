@@ -237,6 +237,12 @@ func TestSet(t *testing.T) {
 			Unit:        gear.Unit(5),
 		}
 
+		tooLow := Movement{
+			Name:        "over-head press",
+			TrainingMax: 5,
+			Unit:        gear.LBS,
+		}
+
 		s1 := Set{
 			Movement: m1,
 		}
@@ -245,11 +251,17 @@ func TestSet(t *testing.T) {
 			Movement: mBadUnit,
 		}
 
+		s3 := Set{
+			Movement: tooLow,
+		}
+
 		goodGear := gear.Default(gear.LBS)
 
 		badBarGear := gear.Default(gear.LBS)
 		badBarGear.Bar.Unit = gear.Unit(5)
-		t.Log(uint(badBarGear.Bar.Unit))
+
+		badPlatesGear := gear.Default(gear.LBS)
+		badPlatesGear.Plates.Weights = []float64{}
 
 		tt := []struct {
 			set  Set
@@ -260,10 +272,12 @@ func TestSet(t *testing.T) {
 			{Set{}, false, goodGear, nil},
 			{s1, false, badBarGear, gear.ErrInvalidUnit},
 			{s2, false, goodGear, gear.ErrInvalidUnit},
+			{s1, false, badPlatesGear, gear.ErrNoPlatesFound},
+			{s3, true, goodGear, nil},
 		}
 		for _, test := range tt {
 			if err := test.set.calculate(test.rec, test.gear); err != nil {
-				if err.Error() != test.err.Error() {
+				if !errors.Is(err, test.err) {
 					t.Error(err, test.err)
 				}
 			}
