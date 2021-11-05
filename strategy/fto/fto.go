@@ -245,11 +245,7 @@ func (s *Set) calculate(recommendPlates bool, g gear.Gear) error {
 	(*s).Weight = rounded
 
 	if recommendPlates {
-		rec, err := g.Recommend(c)
-		if err != nil {
-			return err
-		}
-
+		rec, _ := g.Recommend(c)
 		(*s).Plates = rec
 	}
 

@@ -274,6 +274,7 @@ func TestSet(t *testing.T) {
 			{s2, false, goodGear, gear.ErrInvalidUnit},
 			{s1, false, badPlatesGear, gear.ErrNoPlatesFound},
 			{s3, true, goodGear, nil},
+			{s3, true, goodGear, nil},
 		}
 		for _, test := range tt {
 			if err := test.set.calculate(test.rec, test.gear); err != nil {
