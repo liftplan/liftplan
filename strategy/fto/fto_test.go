@@ -47,6 +47,29 @@ func TestStrategy(t *testing.T) {
 	})
 }
 
+func TestSesion(t *testing.T) {
+	t.Parallel()
+	t.Run("addWarmup", func(t *testing.T) {
+		t.Parallel()
+		tt := []struct {
+			sess     Session
+			gear     gear.Gear
+			expected Set
+			err      error
+		}{
+			{Session{}, gear.Default(gear.LBS), Set{}, errors.New("no set found matching: Working")},
+		}
+		for _, test := range tt {
+			err := test.sess.addWarmup(test.gear)
+			if err != nil {
+				if test.err.Error() != err.Error() {
+					t.Error(test.err, err)
+				}
+			}
+		}
+	})
+}
+
 func TestSetType(t *testing.T) {
 	t.Parallel()
 	t.Run("UnmarshalJSON", func(t *testing.T) {
