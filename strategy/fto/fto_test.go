@@ -51,13 +51,19 @@ func TestSesion(t *testing.T) {
 	t.Parallel()
 	t.Run("addWarmup", func(t *testing.T) {
 		t.Parallel()
+
+		goodGear := gear.Default(gear.LBS)
+		badGearUnit := gear.Default(gear.LBS)
+		badGearUnit.Unit = gear.Unit(5)
+
 		tt := []struct {
 			sess     Session
 			gear     gear.Gear
 			expected Set
 			err      error
 		}{
-			{Session{}, gear.Default(gear.LBS), Set{}, errors.New("no set found matching: Working")},
+			{Session{}, goodGear, Set{}, errors.New("no set found matching: Working")},
+			{Session{Set{Type: Working}}, badGearUnit, Set{}, gear.ErrInvalidUnit},
 		}
 		for _, test := range tt {
 			err := test.sess.addWarmup(test.gear)
