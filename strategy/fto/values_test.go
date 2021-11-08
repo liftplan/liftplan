@@ -2,6 +2,7 @@ package fto
 
 import (
 	"errors"
+	"fmt"
 	"net/url"
 	"testing"
 
@@ -70,6 +71,11 @@ func TestFromValues(t *testing.T) {
 	missingStrat.Del("fto.strategy")
 	badStrat, _ := s1.Values()
 	badStrat["fto.strategy"] = []string{"blah"}
+	missingMovement, _ := s1.Values()
+	missingMovement.Del("fto.1")
+
+	malformedTM, _ := s1.Values()
+	malformedTM.Set("fto.0", "woot")
 
 	tt := []struct {
 		input    url.Values
@@ -80,6 +86,8 @@ func TestFromValues(t *testing.T) {
 		{goodVals, s1, nil},
 		{missingStrat, s1, errors.New("missing strategy in query")},
 		{badStrat, s1, ErrInvalidStrategyType},
+		{missingMovement, s1, fmt.Errorf("movement %v not found", "fto.1")},
+		{malformedTM, s1, fmt.Errorf("unable to convert %v to float", "woot")},
 	}
 
 	for _, test := range tt {
