@@ -13,29 +13,6 @@ const (
 	namespace = "fto"
 )
 
-// Values conforms to the Valuer interface and is part of the LiftPlanner interface
-func (s Strategy) Values() (url.Values, error) {
-	vals, err := gear.ToValues(s.Gear)
-	if err != nil {
-		return vals, err
-	}
-	vals.Set("method", namespace)
-	vals.Set(namespace+".warmup", fmt.Sprintf("%v", s.Warmup))
-	vals.Set(namespace+".jokersets", fmt.Sprintf("%v", s.JokerSets))
-	vals.Set(namespace+".recplates", fmt.Sprintf("%v", s.RecommendPlates))
-	vals.Set(namespace+".strategy", s.Type.String())
-	// TODO: we need to make sure these movements are exported properly
-
-	for i, m := range s.Movements {
-		a, err := gear.ConvertFromTo(m.TrainingMax, m.Unit, s.Gear.Unit)
-		if err != nil {
-			return vals, err
-		}
-		vals.Set(namespace+fmt.Sprintf(".%v", i), fmt.Sprintf("%.2f", a))
-	}
-	return vals, nil
-}
-
 // FromValues takes a `url.Values` and builds and returns a strategy an error.
 func FromValues(v url.Values) (s Strategy, err error) {
 	g, err := gear.FromValues(v)

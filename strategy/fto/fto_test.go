@@ -3,6 +3,7 @@ package fto
 import (
 	"bytes"
 	"errors"
+	"net/url"
 	"testing"
 
 	"github.com/liftplan/liftplan"
@@ -73,6 +74,26 @@ func TestSesion(t *testing.T) {
 				}
 			}
 		}
+	})
+	t.Run("Values", func(t *testing.T) {
+		t.Parallel()
+		tt := []struct {
+			input    url.Values
+			expected Strategy
+			err      error
+		}{
+			{url.Values{}, Strategy{}, gear.ErrMissingUnitQuery},
+		}
+
+		for _, test := range tt {
+			_, err := FromValues(test.input)
+			if err != nil {
+				if err.Error() != test.err.Error() {
+					t.Error(err, test.err)
+				}
+			}
+		}
+
 	})
 }
 

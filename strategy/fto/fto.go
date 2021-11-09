@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"html/template"
+	"net/url"
 
 	"github.com/liftplan/liftplan"
 	"github.com/liftplan/liftplan/gear"
@@ -572,6 +573,29 @@ func (s Strategy) Plan(f liftplan.Format) ([]byte, error) {
 	default:
 		return nil, errors.New("liftplan format not implemented")
 	}
+}
+
+// Values conforms to the Valuer interface and is part of the LiftPlanner interface
+func (s Strategy) Values() (url.Values, error) {
+	vals, err := gear.ToValues(s.Gear)
+	if err != nil {
+		return vals, err
+	}
+	vals.Set("method", namespace)
+	vals.Set(namespace+".warmup", fmt.Sprintf("%v", s.Warmup))
+	vals.Set(namespace+".jokersets", fmt.Sprintf("%v", s.JokerSets))
+	vals.Set(namespace+".recplates", fmt.Sprintf("%v", s.RecommendPlates))
+	vals.Set(namespace+".strategy", s.Type.String())
+	// TODO: we need to make sure these movements are exported properly
+
+	for i, m := range s.Movements {
+		a, err := gear.ConvertFromTo(m.TrainingMax, m.Unit, s.Gear.Unit)
+		if err != nil {
+			return vals, err
+		}
+		vals.Set(namespace+fmt.Sprintf(".%v", i), fmt.Sprintf("%.2f", a))
+	}
+	return vals, nil
 }
 
 // NewProgression Generates a new 7 week progression from a set of movements
