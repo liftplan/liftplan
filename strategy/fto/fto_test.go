@@ -46,6 +46,26 @@ func TestStrategy(t *testing.T) {
 			t.Error(err)
 		}
 	})
+	t.Run("Values", func(t *testing.T) {
+		t.Parallel()
+		tt := []struct {
+			input    url.Values
+			expected Strategy
+			err      error
+		}{
+			{url.Values{}, Strategy{}, gear.ErrMissingUnitQuery},
+		}
+
+		for _, test := range tt {
+			_, err := FromValues(test.input)
+			if err != nil {
+				if err.Error() != test.err.Error() {
+					t.Error(err, test.err)
+				}
+			}
+		}
+
+	})
 }
 
 func TestSesion(t *testing.T) {
@@ -75,25 +95,83 @@ func TestSesion(t *testing.T) {
 			}
 		}
 	})
-	t.Run("Values", func(t *testing.T) {
+	t.Run("addFSLMulti", func(t *testing.T) {
 		t.Parallel()
+
 		tt := []struct {
-			input    url.Values
-			expected Strategy
+			sess     Session
+			expected Set
 			err      error
 		}{
-			{url.Values{}, Strategy{}, gear.ErrMissingUnitQuery},
+			{Session{}, Set{}, errors.New("no set found matching: Working")},
+			{Session{Set{Type: Working}}, Set{}, gear.ErrInvalidUnit},
 		}
-
 		for _, test := range tt {
-			_, err := FromValues(test.input)
+			err := test.sess.addFSLMulti()
 			if err != nil {
-				if err.Error() != test.err.Error() {
-					t.Error(err, test.err)
+				if test.err.Error() != err.Error() {
+					t.Error(test.err, err)
 				}
 			}
 		}
+	})
+	t.Run("addJokers", func(t *testing.T) {
+		t.Parallel()
 
+		tt := []struct {
+			sess     Session
+			expected Set
+			err      error
+		}{
+			{Session{}, Set{}, errors.New("no set found matching: Working")},
+			{Session{Set{Type: Working}}, Set{}, gear.ErrInvalidUnit},
+		}
+		for _, test := range tt {
+			err := test.sess.addJokers()
+			if err != nil {
+				if test.err.Error() != err.Error() {
+					t.Error(test.err, err)
+				}
+			}
+		}
+	})
+	t.Run("addFSL", func(t *testing.T) {
+		t.Parallel()
+
+		tt := []struct {
+			sess     Session
+			expected Set
+			err      error
+		}{
+			{Session{}, Set{}, errors.New("no set found matching: Working")},
+			{Session{Set{Type: Working}}, Set{}, gear.ErrInvalidUnit},
+		}
+		for _, test := range tt {
+			err := test.sess.addFSL()
+			if err != nil {
+				if test.err.Error() != err.Error() {
+					t.Error(test.err, err)
+				}
+			}
+		}
+	})
+	t.Run("SetTypeIndex", func(t *testing.T) {
+		t.Parallel()
+
+		tt := []struct {
+			sess     Session
+			setType  SetType
+			expected int
+		}{
+			{Session{}, Working, -1},
+			{Session{Set{Type: Working}}, Working, 0},
+		}
+		for _, test := range tt {
+			result := test.sess.SetTypeIndex(test.setType)
+			if test.expected != result {
+				t.Error(test.expected, result)
+			}
+		}
 	})
 }
 
