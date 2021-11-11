@@ -562,13 +562,8 @@ func (s Strategy) Plan(f liftplan.Format) ([]byte, error) {
 		return json.Marshal(p)
 	case liftplan.HTML:
 		var b bytes.Buffer
-		t, err := template.New("plan").Parse(planTemplate)
-		if err != nil {
-			return nil, err
-		}
-		if err := t.Execute(&b, p); err != nil {
-			return nil, err
-		}
+		t, _ := template.New("plan").Parse(planTemplate)
+		t.Execute(&b, p)
 		return b.Bytes(), nil
 	default:
 		return nil, errors.New("liftplan format not implemented")
