@@ -173,6 +173,30 @@ func TestSesion(t *testing.T) {
 			}
 		}
 	})
+	t.Run("calculate", func(t *testing.T) {
+		t.Parallel()
+
+		badGear := gear.Default(gear.LBS)
+		badGear.Unit = gear.Unit(5)
+
+		tt := []struct {
+			sess      Session
+			recplates bool
+			gear      gear.Gear
+			err       error
+		}{
+			{Session{}, false, gear.Default(gear.LBS), nil},
+			{Session{}, false, badGear, nil},
+		}
+		for _, test := range tt {
+			err := test.sess.calculate(test.recplates, test.gear)
+			if err != nil {
+				if err.Error() != test.err.Error() {
+					t.Error(err, test.err)
+				}
+			}
+		}
+	})
 }
 
 func TestSetType(t *testing.T) {
