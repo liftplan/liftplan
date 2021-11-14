@@ -1,0 +1,15 @@
+# ideas 
+
+- expand the workouts this supports
+- create a svelt3 app to consume the api
+    - this could have nice features to it for UX
+    - experiment with WASM??
+- maybe this has user accounts
+    - maybe we hash your email address
+    - you get an email to login (verify its you)
+- maybe it could store changes over time?
+- maybe make a nicer template for printing
+    - maybe native 4 to page?
+    - cleaner layout?
+    - a11y thinking?
+- 
