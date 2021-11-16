@@ -1,8 +1,8 @@
 # ideas 
 
 - expand the workouts this supports
-    - more 5/3/1 routines
-    - 
+    - more 5/3/1 routines (research this)
+    - better UI templates. Maybe reimagine this?
 - create a svelt3 app to consume the api
     - this could have nice features to it for UX
     - experiment with WASM??
