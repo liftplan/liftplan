@@ -13,8 +13,8 @@
     - you get an email to login (verify its you)
     - track progress?
 - maybe it could store changes over time?
+    - I'd like to explore this a bit more
 - maybe make a nicer template for printing
     - maybe native 4 to page?
     - cleaner layout?
     - a11y thinking?
-
