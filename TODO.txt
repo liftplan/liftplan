@@ -21,3 +21,6 @@
 - tracking statistics
 	- this could be useful for seeing lifts over time 
 	- this could be useful for gettin old plans
+
+
+I think it would be nice to use this to wire up stack tracing (maybe AWS xray or something)
