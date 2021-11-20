@@ -23,4 +23,5 @@
 	- this could be useful for gettin old plans
 
 
-I think it would be nice to use this to wire up stack tracing (maybe AWS xray or something)
+I think it would be nice to use this to wire up stack tracing (maybe AWS xray or something).
+Configure automated deploy patterns for the lambda part too
