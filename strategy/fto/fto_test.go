@@ -179,6 +179,20 @@ func TestSesion(t *testing.T) {
 		badGear := gear.Default(gear.LBS)
 		badGear.Unit = gear.Unit(5)
 
+		// s := Session{
+		// 	Set{
+		// 		Movement: Movement{
+		// 			Name: "Deadlift",
+		// 			TrainingMax: 500,
+		// 			Unit: gear.LBS,
+		// 		},
+		// 		Percent: 55,
+		// 		Reps: 5,
+		// 		Type: Working,
+
+		// 	},
+		// }
+
 		tt := []struct {
 			sess      Session
 			recplates bool
@@ -187,6 +201,7 @@ func TestSesion(t *testing.T) {
 		}{
 			{Session{}, false, gear.Default(gear.LBS), nil},
 			{Session{}, false, badGear, nil},
+			// {s1, false, badGear, nil},
 		}
 		for _, test := range tt {
 			err := test.sess.calculate(test.recplates, test.gear)
