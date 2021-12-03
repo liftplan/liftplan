@@ -1,5 +1,42 @@
 # ideas 
 
+
+API
+---
+- breakout API server to be _only_ a json API
+-- add api docs
+-- support json submission
+-- maintain the "no js" version (i like it)
+-- support html to pdf rendering (maybe as its own lambda)
+
+JS
+--
+- what role can WASM play? maybe we don't even have to make server calls?
+- login and tracking
+- add user login
+- add ability to render plan and fill it out
+
+mobile
+------
+litplan barbell calculator
+- heaviest plates
+- progression speed
+
+
+OPS
+---
+- automated deploy on release branch for release
+- automated deploy on master for trunk
+
+Features:
+- allow more movement types
+- allow for supersets?
+- add more 5/3/1 plans
+
+
+
+
+
 - expand the workouts this supports
     - more 5/3/1 routines (research this)
     - better UI templates. Maybe reimagine this?
