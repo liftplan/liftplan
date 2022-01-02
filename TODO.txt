@@ -8,6 +8,7 @@ API
 -- support json submission
 -- maintain the "no js" version (i like it)
 -- support html to pdf rendering (maybe as its own lambda)
+-- tracing and telemetry 
 
 JS
 --
