@@ -13,7 +13,7 @@ API
 JS
 --
 - what role can WASM play? maybe we don't even have to make server calls?
-- login and tracking
+- ability to save plans
 - add user login
 - add ability to render plan and fill it out
 
