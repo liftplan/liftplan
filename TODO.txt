@@ -8,7 +8,12 @@ API
 -- support json submission
 -- maintain the "no js" version (i like it)
 -- support html to pdf rendering (maybe as its own lambda)
--- tracing and telemetry 
+-- tracing and telemetry
+- simplify the api
+-- what can get cut out?
+-- how do we safely let folks name things?
+-- maybe we just add more dropdown items?
+-- maybe folks can submit a recommendation for a name?
 
 JS
 --
