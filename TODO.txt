@@ -1,5 +1,10 @@
 # ideas 
 
+## design goals.
+The next round of design for this is to simplify the api layer and expand upon. This means that the 
+application should continue its goals of being serverless and cost effective while expanding on 
+tooling surrounding it. This means that we should further decompose what lives where.
+
 
 API
 ---
