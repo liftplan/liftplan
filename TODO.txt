@@ -26,12 +26,14 @@ JS
 - ability to save plans
 - add user login
 - add ability to render plan and fill it out
+- sort out react vs svelte (I'd like to use svelte, maybe?)
 
 mobile
 ------
 litplan barbell calculator
 - heaviest plates
 - progression speed
+- what would it take to make a native swift app? 
 
 
 OPS
