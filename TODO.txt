@@ -71,6 +71,8 @@ Features:
 - tracking statistics
 	- this could be useful for seeing lifts over time 
 	- this could be useful for gettin old plans
+	- sharing a plan if you are a trainer. So maybe you share a plan and a logged in user can "clone" the plan
+	  and associate that plan to their account.
 
 
 I think it would be nice to use this to wire up stack tracing (maybe AWS xray or something).
