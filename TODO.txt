@@ -5,6 +5,8 @@ The next round of design for this is to simplify the api layer and expand upon. 
 application should continue its goals of being serverless and cost effective while expanding on 
 tooling surrounding it. This means that we should further decompose what lives where.
 
+# breaking this down, I think the first steps should be to do a new API design phase to think about the calls and structures we'd want for this, as well as the structures that would be supported by the tool.
+
 
 API
 ---
