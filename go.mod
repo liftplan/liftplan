@@ -1,3 +1,3 @@
 module github.com/liftplan/liftplan
 
-go 1.22
+go 1.23.5
