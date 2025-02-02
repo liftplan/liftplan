@@ -5,7 +5,5 @@ a tool for planning lifts
 
 [![Go Report Card](https://goreportcard.com/badge/github.com/liftplan/liftplan)](https://goreportcard.com/report/github.com/liftplan/liftplan)
 
-[![CircleCI](https://circleci.com/gh/liftplan/liftplan/tree/main.svg?style=svg)](https://circleci.com/gh/liftplan/liftplan/tree/main)
-
 
 This project is under active development and the API will most likely break.
