@@ -24,7 +24,6 @@ type Liftplanner interface {
 // FormFields is an interface for a strategy so that all of its formfields can be generated.
 type FormFields interface {
 	Renderer
-	Elaborator
 	Namer
 	ShortCoder
 }
@@ -53,9 +52,4 @@ type Namer interface {
 // ShortCoder is the interface for a Liftplan's shortCode
 type ShortCoder interface {
 	ShortCode() string
-}
-
-// Elaborator is an interface used by formFields to provide more information about Strategies.
-type Elaborator interface {
-	Elaborate() (template.HTML, error)
 }

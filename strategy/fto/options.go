@@ -76,8 +76,3 @@ func (i input) Name() string { return "Beyond 5/3/1" }
 
 // ShortCode is the code used for templating
 func (i input) ShortCode() string { return "fto" }
-
-// Elaborate is a method that returns a string to elbarate on the context of a strategy.
-func (i input) Elaborate() (template.HTML, error) {
-	return "", nil
-}

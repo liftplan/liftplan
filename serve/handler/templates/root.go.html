@@ -88,9 +88,4 @@
     </fieldset>
     <input id="submit" class="button-primary" type="submit" value="Plan" />
 </form>
-    {{ range $, $m := .Methods}}
-    <article class="elaborate-{{$m.ShortCode}}">
-      <!--{{ $m.Elaborate }} -->
-    </article>
-    {{ end }}
 {{template "footer"}}

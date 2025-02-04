@@ -14,7 +14,4 @@ func TestFormFields(t *testing.T) {
 	if f.ShortCode() != "fto" {
 		t.Error("unexpected ShortCode")
 	}
-	if _, err := f.Elaborate(); err != nil {
-		t.Error(err)
-	}
 }
