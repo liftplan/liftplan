@@ -70,30 +70,6 @@ func (u *Unit) UnmarshalJSON(b []byte) error {
 	return nil
 }
 
-// toLBSFrom takes a weight converts to LBS
-func toLBSFrom(w float64, from Unit) (float64, error) {
-	switch from {
-	case LBS:
-		return w, nil
-	case KG:
-		return w * ConversionFactorKGtoLBS, nil
-	default:
-		return 0, ErrInvalidUnit
-	}
-}
-
-// ToKG takes a weight in LBS in converts to KG
-func toKGFrom(w float64, from Unit) (float64, error) {
-	switch from {
-	case KG:
-		return w, nil
-	case LBS:
-		return w / ConversionFactorKGtoLBS, nil
-	default:
-		return 0, ErrInvalidUnit
-	}
-}
-
 // Valid checks that a Unit is either KG or LBS and returns a boolean
 func (u Unit) Valid() bool {
 	return u == KG || u == LBS
@@ -103,12 +79,17 @@ func (u Unit) Valid() bool {
 // requested unit. For instance if you wanted to convert 55 lbs to kg,
 // Convert(55.0, LBS, KG) would return 24.9476, nil.
 func ConvertFromTo(w float64, from Unit, to Unit) (float64, error) {
-	switch to {
-	case KG:
-		return toKGFrom(w, from)
-	case LBS:
-		return toLBSFrom(w, from)
-	default:
+	if !from.Valid() || !to.Valid() {
 		return 0, ErrInvalidUnit
 	}
+	if from == to {
+		return w, nil
+	}
+	if to == KG {
+		return w / ConversionFactorKGtoLBS, nil
+	}
+	if to == LBS {
+		return w * ConversionFactorKGtoLBS, nil
+	}
+	return 0, ErrInvalidUnit
 }

@@ -127,6 +127,8 @@ func equal(a, b []float64) bool {
 	return true
 }
 
+// TODO: move to sets = https://github.com/deckarep/golang-set
+
 // tidy takes a slice of float64, removes any duplicate values and sorts the output.
 func tidy(input []float64) []float64 {
 	m := make(map[float64]struct{})
