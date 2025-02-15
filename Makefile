@@ -1,10 +1,18 @@
 
 coverage_file=coverage.out
 
+.PHONY: run dev
+
+build:
+	docker build . -t liftplan
+
+run: build
+	docker run -p 9000:9000 liftplan
+	
 # this is just a quality of life setting for watching all files that could
 # change and rebuilding the server. This is mostly used for deving html templates
 dev:
-	find ./strategy ./gear ./serve -print | entr -r go run serve/run/main.go
+	find ./strategy ./gear ./serve -print | entr -r make run
 
 test:
 	go test -race -v ./strategy/... ./gear/...

@@ -1,0 +1,27 @@
+# fly.toml app configuration file generated for liftplan-withered-silence-7041 on 2025-02-14T21:09:57-06:00
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
+
+app = 'liftplan'
+primary_region = 'mia'
+
+[build]
+[build.args]
+GO_VERSION = '1.24'
+
+[env]
+PORT = '9000'
+
+[http_service]
+internal_port = 9000
+force_https = true
+auto_stop_machines = 'stop'
+auto_start_machines = true
+min_machines_running = 0
+processes = ['app']
+
+[[vm]]
+memory = '256mb'
+cpu_kind = 'shared'
+cpus = 1
