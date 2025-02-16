@@ -1,7 +1,7 @@
 package handler
 
 import (
-	_ "embed" // used for embeding templates
+	_ "embed"
 	"errors"
 	"fmt"
 	"html/template"
@@ -12,7 +12,6 @@ import (
 
 	"github.com/liftplan/liftplan"
 	"github.com/liftplan/liftplan/gear"
-	"github.com/liftplan/liftplan/serve"
 	"github.com/liftplan/liftplan/strategy/fto"
 )
 
@@ -144,13 +143,19 @@ func pageTemplate(core string, name string) (*template.Template, error) {
 	return t, nil
 }
 
-func getOptions() serve.Options {
+func getOptions() Options {
 	gf := gear.FormFields()
 	f := fto.FormFields()
-	return serve.Options{
+	return Options{
 		Methods: []liftplan.FormFields{f},
 		Gear:    gf,
 	}
+}
+
+// Options represent HTML Gear and Method options for the webapp
+type Options struct {
+	Gear    template.HTML
+	Methods []liftplan.FormFields
 }
 
 func plannerFromValues(vals url.Values) (liftplan.Liftplanner, error) {
