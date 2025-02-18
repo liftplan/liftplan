@@ -3,6 +3,9 @@ coverage_file=coverage.out
 
 .PHONY: run dev
 
+vendor:
+	@cd serve && ./scripts/get-deps.sh
+
 build:
 	docker build . -t liftplan
 
