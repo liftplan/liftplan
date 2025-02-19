@@ -2,11 +2,12 @@ package main
 
 import (
 	"embed"
-	"log"
 	"net/http"
 
 	// _ "net/http/pprof"
 
+	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/chi/v5/middleware"
 	"github.com/liftplan/liftplan/serve/handler"
 )
 
@@ -14,11 +15,12 @@ import (
 var staticAssets embed.FS
 
 func main() {
-	http.HandleFunc("/", handler.Root())
-	http.HandleFunc("/plan", handler.Plan())
-	http.Handle("/static/", http.FileServerFS(staticAssets))
-	s := http.Server{
-		Addr: "0.0.0.0:9000",
-	}
-	log.Println(s.ListenAndServe())
+
+	r := chi.NewRouter()
+	r.Use(middleware.Logger)
+	r.HandleFunc("/", handler.Root())
+	r.HandleFunc("/v2", handler.RootV2())
+	r.HandleFunc("/plan", handler.Plan())
+	r.Handle("/static/*", http.FileServerFS(staticAssets))
+	http.ListenAndServe(":9000", r)
 }

@@ -1,0 +1,28 @@
+<form action="/plan" class="rootForm" method="post">
+    <fieldset id="gear">
+    <label>Select your gear.</label>
+    {{ .Gear }}
+    </fieldset>
+    <fieldset id="method">
+    <label for="method">Choose your training method.</label>
+    {{ range $i, $m := .Methods}}
+    <input
+      type="radio"
+      id="{{$m.ShortCode}}"
+      name="method"
+      value="{{$m.ShortCode}}"
+      {{if eq $i 0 }}checked{{end}}
+    />
+    <label class="inline" for="{{$m.ShortCode}}">{{$m.Name}}</label>
+    {{ end }}
+    <input type="radio" id="null" name="method" value="null" disabled/>
+    <label class="inline" for="null">maybe someday.</label>
+
+    {{ range $, $m := .Methods}}
+    <div class="{{$m.ShortCode}}">
+      {{ $m.Render }}
+    </div>
+    {{ end }}
+    </fieldset>
+    <input id="submit" class="button-primary" type="submit" value="Plan" />
+</form>

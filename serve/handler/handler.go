@@ -12,6 +12,7 @@ import (
 
 	"github.com/liftplan/liftplan"
 	"github.com/liftplan/liftplan/gear"
+	"github.com/liftplan/liftplan/serve/handler/components"
 	"github.com/liftplan/liftplan/strategy/fto"
 )
 
@@ -29,6 +30,10 @@ var (
 	footerTemplate string
 	//go:embed templates/header.go.html
 	headerTemplate string
+	//go:embed templates/base.go.html
+	baseTemplate string
+	//go:embed templates/main.form.go.html
+	mainFormTemplate string
 )
 
 func badRequestError(w http.ResponseWriter, err error) {
@@ -55,6 +60,12 @@ func Root() http.HandlerFunc {
 		}
 		cacheControl(maxAge, w)
 		w.Header().Add("Content-Type", "text/html")
+	}
+}
+
+func RootV2() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		components.HomePage().Render(w)
 	}
 }
 
@@ -99,13 +110,7 @@ func formSubmit(w http.ResponseWriter, r *http.Request) {
 }
 
 func wantsJSON(r *http.Request) bool {
-	if r.Header.Get("Accept") == "application/json" {
-		return true
-	}
-	if r.URL.Query().Get("accept") == "application/json" {
-		return true
-	}
-	return false
+	return r.Header.Get("Accept") == "application/json" || r.URL.Query().Get("accept") == "application/json"
 }
 
 func renderJSON(w http.ResponseWriter, r *http.Request) {
